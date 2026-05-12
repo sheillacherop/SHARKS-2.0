@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SHARK 2.0 | Sentinel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="logo">SHARK<span>2.0</span></h1>
+        
+        <div class="scanner">
+            <input type="text" id="urlInput" placeholder="Enter URL to audit...">
+            <button onclick="runScan()">SCAN</button>
+        </div>
+
+        <div id="results" class="bento-grid" style="display:none;">
+            <div class="card wide">
+                <h3>Verdict</h3>
+                <h2 id="vText">--</h2>
+            </div>
+            <div class="card">
+                <h3>CSP Shield</h3>
+                <p id="csp">--</p>
+            </div>
+            <div class="card">
+                <h3>XSS/CSRF</h3>
+                <p id="sec">--</p>
+            </div>
+            <div class="card wide">
+                <h3>KRA Integrity</h3>
+                <p id="kra">--</p>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

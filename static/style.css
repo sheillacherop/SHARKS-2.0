@@ -1,0 +1,12 @@
+body { background: #0a0a0a; color: white; font-family: sans-serif; display: flex; justify-content: center; padding: 50px; }
+.container { width: 100%; max-width: 600px; text-align: center; }
+.logo span { color: #00f2ff; }
+.scanner { margin: 30px 0; display: flex; gap: 10px; }
+input { flex: 1; padding: 15px; background: #000; border: 1px solid #333; color: white; border-radius: 8px; }
+button { background: #00f2ff; color: black; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+.bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; text-align: left; }
+.card { background: #151515; padding: 20px; border-radius: 12px; border: 1px solid #222; }
+.wide { grid-column: span 2; }
+.SAFE { color: #00f2ff; }
+.MALICIOUS { color: #ff4d4d; }
