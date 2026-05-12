@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import requests
 from urllib.parse import urlparse
+import os  # <--- THIS WAS MISSING!
 
 app = Flask(__name__)
 
@@ -53,5 +54,9 @@ def scan():
     except:
         return jsonify({"error": "Site unreachable"}), 400
 
+# --- UPDATED START BLOCK FOR RENDER ---
 if __name__ == '__main__':
-    app.run(debug=True)
+    # This looks for the Port Render assigned
+    port = int(os.environ.get("PORT", 5000))
+    # host='0.0.0.0' allows external connections
+    app.run(host='0.0.0.0', port=port)
