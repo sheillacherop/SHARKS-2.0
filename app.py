@@ -18,44 +18,44 @@ def scan():
         target_url = 'https://' + target_url
 
     try:
-        # 1. Forensic Handshake (Identity Check)
+        # 1. Forensic Handshake
         parsed = urlparse(target_url)
         domain = parsed.netloc.lower()
         verdict = "SAFE"
         if any(bad in domain for bad in ['.xyz', '.top', 'verify', 'win', 'bonus']):
             verdict = "MALICIOUS"
 
-      
+        # 2. Pothole Audit (Case-Insensitive Fix)
+        response = requests.get(target_url, timeout=7, headers={'User-Agent': 'Mozilla/5.0'})
+        h = {k.lower(): v for k, v in response.headers.items()} 
+        
+        potholes = {
+            "csp": "ACTIVE" if 'content-security-policy' in h else "MISSING",
+            "csrf": "SECURE" if 'set-cookie' in h and 'httponly' in h['set-cookie'].lower() else "INSECURE"
+        }
 
         # 3. KRA Revenue Integrity
         content = response.text.lower()
         has_pay = any(m in content for m in ['ipay', 'pesapal', 'daraja', 'stk'])
         has_kra = any(m in content for m in ['kra.go.ke', 'etims', 'gavaconnect'])
-        
-        rev_status = "CLEAN"
-        if has_pay and not has_kra:
-            rev_status = "REVENUE LEAKAGE DETECTED"
+        rev_status = "REVENUE LEAKAGE DETECTED" if (has_pay and not has_kra) else "CLEAN"
 
-        # 4. IDOR / Parameter Audit (The Bundle Theft Detector)
+        # 4. Access Control (IDOR)
         query_params = parsed.query
-        has_id_param = any(key in query_params.lower() for key in ['id', 'user', 'account', 'order'])
-        
-        idor_verdict = "STABLE"
-        if has_id_param:
-            idor_verdict = "VULNERABLE TO PARAMETER SWAPPING (IDOR)"
+        has_id = any(k in query_params.lower() for k in ['id', 'user', 'account', 'order'])
+        idor_verdict = "VULNERABLE (IDOR RISK)" if has_id else "STABLE"
 
         return jsonify({
             "verdict": verdict,
-            "potholes": potholes,
+            "csp": potholes["csp"],
+            "csrf": potholes["csrf"],
             "revenue": rev_status,
-            "idor": idor_verdict,  # Send this to the frontend
-            "url": target_url
+            "idor": idor_verdict
         })
 
     except Exception as e:
-        return jsonify({"error": f"Site unreachable: {str(e)}"}), 400
+        return jsonify({"error": f"Scan failed: {str(e)}"}), 400
 
-# --- UPDATED START BLOCK FOR RENDER ---
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
