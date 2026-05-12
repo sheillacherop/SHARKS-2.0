@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHARK 2.0 | Sentinel</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -15,24 +16,35 @@
         </div>
 
         <div id="results" class="bento-grid" style="display:none;">
+            
             <div class="card wide">
                 <h3>Verdict</h3>
                 <h2 id="vText">--</h2>
             </div>
+
             <div class="card">
                 <h3>CSP Shield</h3>
                 <p id="csp">--</p>
             </div>
+
             <div class="card">
                 <h3>XSS/CSRF</h3>
                 <p id="sec">--</p>
             </div>
+
+            <div class="card">
+                <h3>Access Control</h3>
+                <p id="idor">--</p>
+            </div>
+
             <div class="card wide">
                 <h3>KRA Integrity</h3>
                 <p id="kra">--</p>
             </div>
+
         </div>
     </div>
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
