@@ -25,12 +25,21 @@ def scan():
         if any(bad in domain for bad in ['.xyz', '.top', 'verify', 'win', 'bonus']):
             verdict = "MALICIOUS"
 
-        # 2. Pothole Audit (Case-Insensitive Fix)
-        response = requests.get(target_url, timeout=7, headers={'User-Agent': 'Mozilla/5.0'})
+        # 2. Pothole Audit (NEW IMPROVED VERSION)
+        response = requests.get(target_url, timeout=7, headers={'User-Agent': 'Mozilla/5.0'}, allow_redirects=True)
         h = {k.lower(): v for k, v in response.headers.items()} 
         
+        # --- NEW LOGIC STARTS HERE ---
+        # First check the Gate (Headers)
+        csp_status = "ACTIVE" if 'content-security-policy' in h else "MISSING"
+        
+        # If the gate is empty, check the Lobby (HTML Meta Tags)
+        if csp_status == "MISSING" and 'http-equiv="content-security-policy"' in response.text.lower():
+            csp_status = "ACTIVE (META)"
+        # --- NEW LOGIC ENDS HERE ---
+
         potholes = {
-            "csp": "ACTIVE" if 'content-security-policy' in h else "MISSING",
+            "csp": csp_status,
             "csrf": "SECURE" if 'set-cookie' in h and 'httponly' in h['set-cookie'].lower() else "INSECURE"
         }
 
