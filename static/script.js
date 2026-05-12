@@ -15,4 +15,7 @@ async function runScan() {
     document.getElementById('csp').innerText = data.potholes.csp;
     document.getElementById('sec').innerText = data.potholes.csrf;
     document.getElementById('kra').innerText = data.revenue;
+
+    // --- ADD THIS LINE BELOW ---
+    document.getElementById('idor').innerText = data.idor;
 }
