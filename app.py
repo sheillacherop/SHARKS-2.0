@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import requests
 from urllib.parse import urlparse
-import os  # <--- THIS WAS MISSING!
+import os
 
 app = Flask(__name__)
 
@@ -44,19 +44,26 @@ def scan():
         if has_pay and not has_kra:
             rev_status = "REVENUE LEAKAGE DETECTED"
 
+        # 4. IDOR / Parameter Audit (The Bundle Theft Detector)
+        query_params = parsed.query
+        has_id_param = any(key in query_params.lower() for key in ['id', 'user', 'account', 'order'])
+        
+        idor_verdict = "STABLE"
+        if has_id_param:
+            idor_verdict = "VULNERABLE TO PARAMETER SWAPPING (IDOR)"
+
         return jsonify({
             "verdict": verdict,
             "potholes": potholes,
             "revenue": rev_status,
+            "idor": idor_verdict,  # Send this to the frontend
             "url": target_url
         })
 
-    except:
-        return jsonify({"error": "Site unreachable"}), 400
+    except Exception as e:
+        return jsonify({"error": f"Site unreachable: {str(e)}"}), 400
 
 # --- UPDATED START BLOCK FOR RENDER ---
 if __name__ == '__main__':
-    # This looks for the Port Render assigned
     port = int(os.environ.get("PORT", 5000))
-    # host='0.0.0.0' allows external connections
     app.run(host='0.0.0.0', port=port)
