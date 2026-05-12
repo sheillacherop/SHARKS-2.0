@@ -25,15 +25,7 @@ def scan():
         if any(bad in domain for bad in ['.xyz', '.top', 'verify', 'win', 'bonus']):
             verdict = "MALICIOUS"
 
-        # 2. Pothole Audit (Security Headers)
-        response = requests.get(target_url, timeout=5)
-        h = response.headers
-        
-        potholes = {
-            "csp": "ACTIVE" if 'Content-Security-Policy' in h else "MISSING",
-            "xss": "ACTIVE" if 'X-XSS-Protection' in h else "MISSING",
-            "csrf": "SECURE" if 'Set-Cookie' in h and 'httponly' in h.get('Set-Cookie', '').lower() else "INSECURE"
-        }
+      
 
         # 3. KRA Revenue Integrity
         content = response.text.lower()
